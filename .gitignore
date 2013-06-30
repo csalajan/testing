@@ -4,6 +4,9 @@ include/
 lib/
 local/
 
+# Django admin static files
+admin/
+
 # templates
 example/scheducal/templates
 
