@@ -1,0 +1,14 @@
+# virtualenv directories
+bin/
+include/
+lib/
+local/
+
+# templates
+example/scheducal/templates
+
+# database
+*.sqlite3
+
+# compiled python
+*.pyc
