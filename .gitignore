@@ -4,7 +4,8 @@ include/
 lib/
 local/
 
-# Django admin static files
+# Django files
+static/
 admin/
 
 # templates
@@ -15,3 +16,6 @@ example/scheducal/templates
 
 # compiled python
 *.pyc
+
+# swap files
+*.swp
