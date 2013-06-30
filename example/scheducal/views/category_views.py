@@ -13,11 +13,13 @@ from scheducal.serializers import (
         CategorySerializer
     )
 from rest_framework import generics
+from rest_framework.permissions import IsAdminUser
 
 class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = Category.objects.all()
     serializer_class = CategorySerializer

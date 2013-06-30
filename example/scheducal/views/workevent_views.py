@@ -16,7 +16,7 @@ from scheducal.serializers import (
         CategorySerializer,
     )
 from rest_framework import generics
-import logging
+from rest_framework.permissions import IsAdminUser
 
 class WorkEventList(generics.ListCreateAPIView):
     serializer_class = SaveWorkEventSerializer
@@ -45,8 +45,15 @@ class WorkEventListForPayPeriod(generics.ListCreateAPIView):
         obj.user = self.request.user
 
 class WorkEventDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = WorkEvent.objects.all()
     serializer_class = SaveWorkEventSerializer
+
+    def get_queryset(self):
+        event = WorkEvent.objects.get(pk=self.kwargs['pk'])
+        user = self.request.user
+        if event.user != user:
+            if user.is_staff == False:
+                raise PermissionDenied
+        return WorkEvent.objects.all()
 
     def pre_save(self, obj):
         obj.user = self.request.user
