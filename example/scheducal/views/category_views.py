@@ -1,25 +1,36 @@
-from django.contrib.auth.models import (
-        User,
-        AnonymousUser,
-    )
-from django.core.exceptions import PermissionDenied
-from rest_framework.response import Response
-from rest_framework import status
-from django.http import Http404
+
+from django.http import HttpResponse
 from scheducal.models import Category
-from pay_period.models import PayPeriod
-from scheducal.serializers import (
-        UserSerializer, 
-        CategorySerializer
-    )
-from rest_framework import generics
-from rest_framework.permissions import IsAdminUser
+from django.utils import simplejson
+from django.core import serializers
+from django.views.decorators.http import require_http_methods
+import datetime
 
-class CategoryList(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
 
-class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAdminUser,)
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+@require_http_methods(['GET'])
+def category_list(request):
+    categories = Category.objects.all()
+    data = [category.to_dict() for category in categories]
+    data = simplejson.dumps(data)
+    return HttpResponse(data, mimetype='application/json')
+
+@require_http_methods(['POST'])
+def category_add(request):
+    name = request.POST['name']
+    is_project = request.POST['is_project']
+    category = Category(name=name, is_project=is_project)
+    try:
+        category.save()
+    except:
+        return HttpResponse(status=494)
+    return HttpResponse(status=200)
+
+
+@require_http_methods(['GET'])
+def category_detail(request, pk):
+    categories = Category.objects.get(pk=pk)
+    data = simplejson.dumps(categories.to_dict())
+    return HttpResponse(data, mimetype='application/json')
+
+
+
